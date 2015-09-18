@@ -2,7 +2,7 @@
 /**
 * Plugin Name: SMT2 for WordPress
 * Description: An adaptation of SMT2 for WordPress.
-* Version: 1.0.1
+* Version: 1.0.0
 * Author: Sorin Coza
 * Author URI: http://sorincoza.com
 *
@@ -34,7 +34,7 @@ function github_plugin_updater_test_init() {
 	define( 'WP_GITHUB_FORCE_UPDATE', true );
 	define( 'GITHUB_USERNAME', 'sorincoza' );
 	define( 'GITHUB_APP_NAME', 'SMT2-for-WordPress');
-	define( 'GITHUB_TOKEN', 'c83cd96e9f9f5c1934507e9349e9b63a258f48ad' );
+	define( 'GITHUB_TOKEN', '8ff74ad854e7384b13e0990c84b50cea5519c3c8' );
 
 	if ( is_admin() ) { // note the use of is_admin() to double check that this is happening in the admin
 
@@ -52,15 +52,15 @@ function github_plugin_updater_test_init() {
 			'raw_url' => 'https://raw.github.com/' . GITHUB_USERNAME .'/' . GITHUB_APP_NAME . '/master',
 			'github_url' => 'https://github.com/' . GITHUB_USERNAME .'/' . GITHUB_APP_NAME,
 			'zip_url' => 'https://github.com/' . GITHUB_USERNAME .'/' . GITHUB_APP_NAME . '/zipball/master',
-			'sslverify' => true,
+			'sslverify' => false,
 			'requires' => '4.0',
 			'tested' => '4.3',
 			'readme' => 'README.md',
-			'access_token' => GITHUB_TOKEN,
+			'access_token' => '',
 		);
 
-		var_dump($pieces, $config);
-		echo '<style>#adminmenuback{display:none}</style>';
+		// var_dump($pieces, $config);
+		// echo '<style>#adminmenuback{display:none}</style>';
 
 		new WP_GitHub_Updater( $config );
 
