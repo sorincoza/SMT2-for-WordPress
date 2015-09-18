@@ -92,14 +92,6 @@ class WordPress_Plugin_Template_Settings {
 			'title'					=> __( 'Simple Settings', 'smt2wp' ),
 			'description'			=> __( '', 'smt2wp' ),
 			'fields'				=> array(
-				array(
-					'id' 			=> 'smt2wp_post_interval',
-					'label'			=> __( 'Post Interval' , 'smt2wp' ),
-					'description'	=> '<b>Value is in seconds. Default is 30.</b><br>This is the interval at which the recorded data is written into the database. It implies that if a user leaves a page before the first interval is reached, then nothing will be recorded in the database.',
-					'type'			=> 'number',
-					'default'		=> '',
-					'placeholder'	=> __( '30', 'smt2wp' )
-				),
 
 				array(
 					'id' 			=> 'smt2wp_fps',
@@ -117,6 +109,15 @@ class WordPress_Plugin_Template_Settings {
 					'type'			=> 'number',
 					'default'		=> '',
 					'placeholder'	=> __( '3600', 'smt2wp' )
+				),
+
+				array(
+					'id' 			=> 'smt2wp_post_interval',
+					'label'			=> __( 'Post Interval' , 'smt2wp' ),
+					'description'	=> '<b>Value is in seconds. Default is 30.</b><br>This is the interval at which the recorded data is written into the database during a normal view of the page. Tipically, you do not need to modify this.',
+					'type'			=> 'number',
+					'default'		=> '',
+					'placeholder'	=> __( '30', 'smt2wp' )
 				),
 
 			)

@@ -2,11 +2,12 @@
 /**
 * Plugin Name: SMT2 for WordPress
 * Description: An adaptation of SMT2 for WordPress.
-* Version: 1.0
+* Version: 1.0.1
 * Author: Sorin Coza
 * Author URI: http://sorincoza.com
 *
 * Original code: https://code.google.com/p/smt2/
+* GitHub Plugin URI: https://github.com/sorincoza/SMT2-for-WordPress
 */
 
 
@@ -18,8 +19,10 @@ define( 'SMT2WP_PLUGIN_BASENAME', plugin_basename(__FILE__) );
 
 
 // include options page class and instantiate
-include 'options-page-lib/class.php';
-new WordPress_Plugin_Template_Settings( __FILE__ );
+if ( is_admin() ){
+	include 'options-page-lib/class.php';
+	new WordPress_Plugin_Template_Settings( __FILE__ );
+}
 
 
 
