@@ -173,6 +173,10 @@ if (is_admin()) {
 <br/>
 <p>For more info, go to <a href="https://code.google.com/p/smt2/w/list">the Wiki pages</a>.</p>
 
+<a href="generate-debug-info.php" style="display:inline-block;padding: 10px 20px;background: orangered;color:white;font-weight:bold">
+  Download debug info
+</a>
+
 <?php
 }
 

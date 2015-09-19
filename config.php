@@ -58,7 +58,7 @@ function substract_strings( $big_string, $small_string ){
 
 
 
-function diagnose_folders(){
+function get_diagnose_info(){
 
     $folders = array(
         'doc root' => $_SERVER['DOCUMENT_ROOT'],
@@ -108,10 +108,10 @@ function diagnose_folders(){
     $all_ini_settings = ini_get_all();
 
 
-    echo '<br><br>' . json_encode($folders_check_result);
-    echo '<br><br><br><br>' . json_encode($all_ini_settings);
+    $res = json_encode($folders_check_result);
+    $res .= '<<+>>' . json_encode($all_ini_settings);
     // var_dump($all_ini_settings);
-    exit;
+    return $res;
 
 }
 
@@ -180,10 +180,6 @@ if ($handle) {
 
 eval( $php_code );  // now we have the constants for the database
 
-
-
-
-diagnose_folders();
 
 
 
