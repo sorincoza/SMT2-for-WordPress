@@ -2,13 +2,16 @@
 /**
 * Plugin Name: SMT2 for WordPress
 * Description: An adaptation of SMT2 for WordPress.
-* Version: 1.0.0
+* Version: 1.0.1_DEBUG
 * Author: Sorin Coza
 * Author URI: http://sorincoza.com
+* Plugin URI: https://github.com/sorincoza/SMT2-for-WordPress
 *
 * Original code: https://code.google.com/p/smt2/
 * GitHub Plugin URI: https://github.com/sorincoza/SMT2-for-WordPress
 */
+
+
 
 
 
@@ -25,48 +28,8 @@ if ( is_admin() ){
 }
 
 
-// add and instantiate the GitHub updater
-add_action( 'init', 'github_plugin_updater_test_init' );
-function github_plugin_updater_test_init() {
-
-	include_once 'updater.php';
-
-	define( 'WP_GITHUB_FORCE_UPDATE', true );
-	define( 'GITHUB_USERNAME', 'sorincoza' );
-	define( 'GITHUB_APP_NAME', 'SMT2-for-WordPress');
-	define( 'GITHUB_TOKEN', '8ff74ad854e7384b13e0990c84b50cea5519c3c8' );
-
-	if ( is_admin() ) { // note the use of is_admin() to double check that this is happening in the admin
-
-		// get proper directory name:
-		$pieces = explode( '/', SMT2WP_PLUGIN_DIR );
-		$p_len = count($pieces);
-		$proper_folder_name = ( !empty($pieces[ $p_len - 1 ]) )   ?   $pieces[ $p_len - 1 ]   :   $pieces[ $p_len - 2 ] ;
 
 
-		// configuration:
-		$config = array(
-			'slug' => plugin_basename( __FILE__ ),
-			'proper_folder_name' => $proper_folder_name,
-			'api_url' => 'https://api.github.com/repos/'. GITHUB_USERNAME .'/' . GITHUB_APP_NAME,
-			'raw_url' => 'https://raw.github.com/' . GITHUB_USERNAME .'/' . GITHUB_APP_NAME . '/master',
-			'github_url' => 'https://github.com/' . GITHUB_USERNAME .'/' . GITHUB_APP_NAME,
-			'zip_url' => 'https://github.com/' . GITHUB_USERNAME .'/' . GITHUB_APP_NAME . '/zipball/master',
-			'sslverify' => false,
-			'requires' => '4.0',
-			'tested' => '4.3',
-			'readme' => 'README.md',
-			'access_token' => '',
-		);
-
-		// var_dump($pieces, $config);
-		// echo '<style>#adminmenuback{display:none}</style>';
-
-		new WP_GitHub_Updater( $config );
-
-	}
-
-}
 
 
 
