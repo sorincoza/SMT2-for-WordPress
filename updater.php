@@ -68,6 +68,7 @@ class WP_GitHub_Updater {
 
 		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'api_check' ) );
 
+
 		// Hook into the plugin details screen
 		add_filter( 'plugins_api', array( $this, 'get_plugin_info' ), 10, 3 );
 		add_filter( 'upgrader_post_install', array( $this, 'upgrader_post_install' ), 10, 3 );
@@ -77,6 +78,7 @@ class WP_GitHub_Updater {
 
 		// set sslverify for zip download
 		add_filter( 'http_request_args', array( $this, 'http_request_sslverify' ), 10, 2 );
+
 	}
 
 
@@ -87,7 +89,9 @@ class WP_GitHub_Updater {
 	 * @return bool overrule or not
 	 */
 	private function overrule_transients() {
-		return ( defined( 'WP_DEBUG' ) && WP_DEBUG ) || ( defined( 'WP_GITHUB_FORCE_UPDATE' ) || WP_GITHUB_FORCE_UPDATE );
+		return 
+			// ( defined( 'WP_DEBUG' ) && WP_DEBUG ) || 
+			( defined( 'WP_GITHUB_FORCE_UPDATE' ) || WP_GITHUB_FORCE_UPDATE );
 	}
 
 
@@ -109,9 +113,6 @@ class WP_GitHub_Updater {
 		}
 
 
-		if ( ! isset( $this->config['new_version'] ) )
-			$this->config['new_version'] = $this->get_new_version();
-
 		if ( ! isset( $this->config['last_updated'] ) )
 			$this->config['last_updated'] = $this->get_date();
 
@@ -122,8 +123,13 @@ class WP_GitHub_Updater {
 		if ( ! isset( $this->config['plugin_name'] ) )
 			$this->config['plugin_name'] = $plugin_data['Name'];
 
+
 		if ( ! isset( $this->config['version'] ) )
 			$this->config['version'] = $plugin_data['Version'];
+
+		if ( ! isset( $this->config['new_version'] ) )
+			$this->config['new_version'] = $this->config['version'];
+
 
 		if ( ! isset( $this->config['author'] ) )
 			$this->config['author'] = $plugin_data['Author'];
@@ -174,26 +180,15 @@ class WP_GitHub_Updater {
 
 		if ( $this->overrule_transients() || ( !isset( $version ) || !$version || '' == $version ) ) {
 
-			$query = trailingslashit( $this->config['raw_url'] ) . basename( $this->config['slug'] );
-			$query = add_query_arg( array( 'access_token' => $this->config['access_token'] ), $query );
-
-			$raw_response = wp_remote_get( $query, array( 'sslverify' => $this->config['sslverify'] ) );
-
-			if ( is_wp_error( $raw_response ) )
-				$version = false;
-
-			preg_match( '#^\s*Version\:\s*(.*)$#im', $raw_response['body'], $matches );
-
-			if ( empty( $matches[1] ) )
-				$version = false;
-			else
-				$version = $matches[1];
 
 			// back compat for older readme version handling
 			$query = trailingslashit( $this->config['raw_url'] ) . $this->config['readme'];
-			$query = add_query_arg( array( 'access_token' => $this->config['access_token'] ), $query );
+			if ( !empty( $this->config['access_token'] ) ){
+				$query = add_query_arg( array( 'access_token' => $this->config['access_token'] ), $query );
+			}
 
 			$raw_response = wp_remote_get( $query, array( 'sslverify' => $this->config['sslverify'] ) );
+			$raw_response = ( is_wp_error($raw_response)  ?  array( 'body' => '' )  :  $raw_response );
 
 			if ( is_wp_error( $raw_response ) )
 				return $version;
@@ -206,12 +201,36 @@ class WP_GitHub_Updater {
 					$version = $version_readme;
 			}
 
+
+
 			// refresh every 6 hours
 			if ( false !== $version )
-				set_site_transient( $this->config['slug'].'_new_version', $version, 60*60*6 );
+				set_site_transient( $this->config['slug'].'_new_version', $version, 60*60*12 );
 		}
 
 		return $version;
+
+
+			/*
+			// check in main plugin file:
+			$query = trailingslashit( $this->config['raw_url'] ) . basename( $this->config['slug'] );
+			if ( !empty( $this->config['access_token'] ) ){
+				$query = add_query_arg( array( 'access_token' => $this->config['access_token'] ), $query );
+			}
+
+			$raw_response = wp_remote_get( $query, array( 'sslverify' => $this->config['sslverify'] ) );
+			$raw_response = ( is_wp_error($raw_response)  ?  array( 'body' => '' )  :  $raw_response );
+
+			if ( is_wp_error( $raw_response ) )
+				$version = false;
+
+			preg_match( '#^\s*Version\:\s*(.*)$#im', $raw_response['body'], $matches );
+
+			if ( empty( $matches[1] ) )
+				$version = false;
+			else
+				$version = $matches[1];
+			*/
 	}
 
 
@@ -298,8 +317,12 @@ class WP_GitHub_Updater {
 
 		// Check if the transient contains the 'checked' information
 		// If not, just return its value without hacking it
+
 		if ( empty( $transient->checked ) )
 			return $transient;
+
+		$this->config['new_version'] = $this->get_new_version();
+
 
 		// check the version and decide if it's new
 		$update = version_compare( $this->config['new_version'], $this->config['version'] );

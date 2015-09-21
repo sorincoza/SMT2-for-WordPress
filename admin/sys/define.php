@@ -35,7 +35,8 @@ define ('JS_SELECTOR',   JS_PATH."selector".$jsext);
 define ('SWFOBJECT',     ADMIN_PATH."js/swfobject.js"); // it's already minified
 
 /** HTML logs dir. Do not use absolute URLs because fopen wrappers could be disabled. */
-define ('CACHE_DIR',     BASE_PATH."/cache/");
+define ('CACHE_DIR',     get_smt2wp_cache_path() );
+// define ('CACHE_DIR',     BASE_PATH."/cache/");
 // define ('CACHE_DIR',     WP_BASE_LOCAL_DIR . "/wp-content/uploads/smt2/cache/");
 
 

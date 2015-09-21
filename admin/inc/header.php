@@ -13,13 +13,11 @@ for( $i = 0; $i < $folders_len; $i++ ){
   }
 
   // if we got this far:
-  $wp_install_folder .= '/' . $folders[$i] ;
+  $wp_install_folder .= $folders[$i] . '/' ;
 
 }
 
-$protocol = isset($_SERVER['HTTPS'])  ?  'https://'  :  'http://';
-
-$wp_admin_link = $protocol . sanitize_dir_path( $_SERVER['HTTP_HOST'] . $wp_install_folder . '/wp-admin' );
+$wp_admin_link = '//' . $_SERVER['HTTP_HOST'] . $wp_install_folder . 'wp-admin/' ;
 
 ?>
 

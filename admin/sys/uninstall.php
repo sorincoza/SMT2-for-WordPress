@@ -46,11 +46,12 @@ if ($isInstalled) {
   // is root logged?
   if (!is_root()) { die_msg($_loginMsg["NOT_ALLOWED"]); }
   
-  if (isset($_POST['submit']))
+  if (isset($_REQUEST['submit'])  &&  isset($_REQUEST['really_sure'])  &&  isset($_REQUEST['safety_input']))
   {
     $msgs = array();
+    die('deleted');
     
-    if (isset($_POST['droptables'])) {
+    if (isset($_REQUEST['droptables'])) {
       // delete cache logs first
       $logs = db_select_all(TBL_PREFIX.TBL_CACHE, "file", 1);
       foreach ($logs as $log) {
@@ -67,10 +68,6 @@ if ($isInstalled) {
       $msgs[] = 'Cache logs were deleted.';
     }
 
-    if (isset($_POST['dropdb'])) {
-      db_query("DROP DATABASE ".DB_NAME);
-      $msgs[] = 'Database was dropped.';
-    }
 ?>
 
 
@@ -83,7 +80,7 @@ if ($isInstalled) {
       ?>
     </ul>
 
-    <?php if (isset($_POST['removejs'])) { ?>
+    <?php if (isset($_REQUEST['removejs'])) { ?>
 
       <script type="text/javascript">
       //<![CDATA[
@@ -108,7 +105,7 @@ if ($isInstalled) {
     <?php } ?>
   
   
-    <?php if (isset($_POST['removeswf'])) { ?>
+    <?php if (isset($_REQUEST['removeswf'])) { ?>
 
       <p id="delLSO">SWF cookies uninstaller should replace this text.</p>
       <script type="text/javascript">
@@ -126,18 +123,37 @@ if ($isInstalled) {
   
 <?php
   }
-  else
-  {
+  elseif(isset($_REQUEST['submit'])  &&  !isset($_REQUEST['safety_input']) ){
+
+    ?>
+
+      <h3 style="color:orangered">You need to have JavaScript enabled to be able to perform this operation.</h3>
+      <h4>It is a security measure against bots, crawlers, spiders and other dangerous internet predators.</h4>
+
+    <?php
+
+  }else{
     // no POST data yet; show form
 ?>
+  <?php if ( !isset($_REQUEST['submit']) ) :  ?>
+    <h3 style="color:orangered">This will remove SMT2 like it never existed.</h3>
+    <h4>The operation cannot be un-done, so please proceed with care: all your SMT data will be forever lost if you go further.</h4>
+  <?php else: ?>
+    <h3>If you are really, really sure you want to delete everything,</h3>
+    <h4>then tick the checkbox to prove that you are human, and click the "Uninstall" button again.</h4>
+  <?php endif; ?>
 
+  <form action="<?=$_SERVER['PHP_SELF']?>" method="post" id="uninstall-form">
+    
+    <?php if ( isset($_REQUEST['submit']) ) : ?>
+      <br>
+      <input type="checkbox" name="really_sure">
+        <label>Yes, I am human and I am really, really sure</label>
+    <?php endif; ?>
 
-  <form action="<?=$_SERVER['PHP_SELF']?>" method="post">
   <fieldset>
     <input type="checkbox" id="droptables" name="droptables" checked="checked" class="ml" />
       <label for="droptables">Drop tables (will delete also cache logs)</label>
-    <input type="checkbox" id="dropdb" name="dropdb" class="ml" />
-      <label for="dropdb">Drop database</label>
     <input type="checkbox" id="removejs" name="removejs" checked="checked" class="ml" />
       <label for="removejs">Remove JS cookies</label>
     <input type="checkbox" id="removeswf" name="removeswf" checked="checked" class="ml" />
@@ -147,6 +163,20 @@ if ($isInstalled) {
     <input type="submit" name="submit" value="Uninstall" class="button round conf" />
   </fieldset>
   </form>
+
+
+  <script type="text/javascript">
+  (function(){
+    var uninstallForm = document.getElementById( 'uninstall-form' ),
+        safetyInput = document.createElement( 'input' );
+
+    safetyInput.type = 'hidden';
+    safetyInput.name = 'safety_input';
+
+    uninstallForm.appendChild( safetyInput );
+
+  })();
+  </script>
 
 
 <?php

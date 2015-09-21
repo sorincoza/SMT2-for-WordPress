@@ -1,1 +1,1 @@
-~Current Version:1.0.1-DEBUG-VERSION~
+~Current Version:1.2~

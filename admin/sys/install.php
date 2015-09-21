@@ -8,17 +8,6 @@ require '../../config.php';
 include INC_DIR.'doctype.php';
 
 
-// ADDED BY ME
-// if cache folder does not exist, attempt to create it:
-if ( !file_exists( CACHE_DIR )  ){
-  if( !mkdir( CACHE_DIR, 0755, true ) ){
-    die( 'Cannot create cache folder. Please create it manually. It should have this address: <i>' . CACHE_DIR . '</i>' );
-  }
-}
-
-
-
-
 ?>
 
 <head>
@@ -39,6 +28,17 @@ if ( !file_exists( CACHE_DIR )  ){
 <h1><strong>smt2</strong> installer</h1>
 
 <?php
+// ADDED BY ME
+// if cache folder does not exist, attempt to create it:
+if ( !file_exists( CACHE_DIR )  ){
+  if( !mkdir( CACHE_DIR, 0755, true ) ){
+    die( '<strong style="color:orangered">[ ! ]  Cannot create cache folder. Please create it manually. It should have this address: <i>' . CACHE_DIR . '</i></strong>' );
+  }
+}
+?>
+
+
+<?php
 $cnx = db_connect();
 // is already installed?
 if (mysql_query("DESCRIBE ".TBL_PREFIX.TBL_RECORDS, $cnx))
@@ -49,7 +49,7 @@ if (mysql_query("DESCRIBE ".TBL_PREFIX.TBL_RECORDS, $cnx))
   <?php
     // help the root user to unistall smt2 stuff
     $msg = (is_root()) ?
-      'use <a href="uninstall.php">this script</a>'
+      'you need to <a href="uninstall.php">uninstall here</a> first'
       :
       'please delete all <em>'.TBL_PREFIX.'</em> tables from database';
     ?>
